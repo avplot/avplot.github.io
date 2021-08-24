@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.bc50f487d91725d0fc0a86a03ba465af.js"
+  "/precache-manifest.c0358f027b7a081ff73b72ad005da78f.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "avplot"});
