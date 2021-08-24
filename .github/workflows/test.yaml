@@ -1,0 +1,22 @@
+# .github/workflows/test.yaml
+
+name: Test
+
+on:
+  push:
+    branches: [develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: node --version
+      - uses: actions/checkout@v2
+      - run: npm ci
+
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Build site
+        run: npm run build
