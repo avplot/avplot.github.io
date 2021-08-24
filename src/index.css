@@ -3,3 +3,33 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.prose p {
+  margin-bottom: 1em;
+}
+
+.prose a {
+}
+
+.prose a:link {
+  color: #265301;
+}
+
+.prose a:visited {
+  color: #437a16;
+}
+
+.prose a:focus {
+  border-bottom: 1px solid;
+  background: #bae498;
+}
+
+.prose a:hover {
+  border-bottom: 1px solid;
+  background: #cdfeaa;
+}
+
+.prose a:active {
+  background: #265301;
+  color: #cdfeaa;
+}

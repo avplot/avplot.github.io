@@ -66,9 +66,14 @@
   </nav>
 
   <!--Container-->
-  <div class="container mx-auto mt-24 md:mt-16 h-screen px-2">
+  <div class="container mx-auto mt-24 md:mt-16 px-2 pb-2">
     <slot></slot>
   </div>
+  <footer class="text-center py-1 text-xs bg-blueGray-200 text-blueGray-500">
+    Copyright © 2021
+    <a target="_blank" href="https://github.com/avplot/">pbuk</a> |
+    <router-link to="/about">CC BY-SA 4.0</router-link>
+  </footer>
 </template>
 
 <script setup>

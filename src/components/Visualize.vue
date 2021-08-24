@@ -1,9 +1,11 @@
 <template>
-  <div style="xposition: relative; height: 40vh">
+  <div style="height: 40vh">
     <canvas ref="chartRef" />
   </div>
 
-  <app-button @click="animate">Play</app-button>
+  <div class="py-2">
+    <app-button @click="animate">Play</app-button>
+  </div>
 </template>
 
 <script setup>
@@ -33,7 +35,7 @@ import {
   // Filler,
   Legend,
   Title,
-  Tooltip
+  // Tooltip,
 } from 'chart.js';
 
 Chart.register(
@@ -43,8 +45,7 @@ Chart.register(
   ScatterController,
   LinearScale,
   Legend,
-  Title,
-  Tooltip
+  Title
 );
 
 const props = defineProps({
@@ -59,7 +60,7 @@ const props = defineProps({
 
 const config = {
   highlightPointRadius: 4,
-  animationDuration: 1000,
+  animationDuration: 5000,
   maxGain: 0.25,
   valueScale: 1,
   valueOffset: 0,
@@ -70,25 +71,36 @@ const config = {
   octaveOffset: 0,
 };
 
-// create web audio api context
-const audioCtx = new AudioContext();
+function getPlayer() {
+  // create web audio api context
+  const audioCtx = new AudioContext();
 
-// create Oscillator node
-const oscillator = audioCtx.createOscillator();
-const amp = audioCtx.createGain();
-amp.gain.value = 0;
+  // create Oscillator node
+  const oscillator = audioCtx.createOscillator();
+  const amp = audioCtx.createGain();
+  amp.gain.value = 0;
 
-// oscillator.type = 'square';
-oscillator.frequency.setValueAtTime(440, audioCtx.currentTime); // value in hertz
-oscillator.connect(amp).connect(audioCtx.destination);
-oscillator.start();
-audioCtx.suspend();
+  // oscillator.type = 'square';
+  oscillator.frequency.setValueAtTime(440, audioCtx.currentTime); // value in hertz
+  oscillator.connect(amp).connect(audioCtx.destination);
+  oscillator.start();
+  audioCtx.suspend();
+
+  return {
+    audioCtx,
+    amp,
+    oscillator,
+  };
+}
 
 async function animate() {
   const pointsPerMs = props.points.length / config.animationDuration;
 
   let start, previousTimeStamp;
   let i;
+
+  const { amp, audioCtx, oscillator } = getPlayer();
+
   await audioCtx.resume();
 
   function frame(timestamp) {
@@ -118,8 +130,8 @@ async function animate() {
       chart.config.data.datasets[0].pointRadius[i] =
         config.highlightPointRadius;
       const value = props.points[i][1];
-      const scale = config.valueScale * config.octaveScale;
-      const offset = config.valueOffset - config.octaveOffset / scale;
+      const scale = 1 / (config.valueScale * config.octaveScale);
+      const offset = config.valueOffset - config.octaveOffset * scale;
 
       const freq = config.baseFrequency * 2 ** ((value - offset) * scale);
       oscillator.frequency.linearRampToValueAtTime(
@@ -146,7 +158,18 @@ function createChart() {
   }
 
   // Map points to data in the Chart.js format.
-  const data = props.points.map(([x, y]) => ({ x, y }));
+  let minValue = Number.POSITIVE_INFINITY;
+  let maxValue = Number.NEGATIVE_INFINITY;
+
+  const data = props.points.map(([x, y]) => {
+    minValue = Math.min(minValue, y);
+    maxValue = Math.max(maxValue, y);
+    return { x, y };
+  });
+  const offset = 0; // (maxValue - minValue) / 2;
+  config.valueOffset = offset;
+  config.valueScale = Math.max(maxValue - offset, offset - minValue);
+
   const pointRadius = data.map(() => 0);
 
   chart = new Chart(chartRef.value, {
