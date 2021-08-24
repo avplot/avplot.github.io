@@ -29,7 +29,7 @@ class AvData {
       ...this.settings.chartSettings,
       data: [],
       pointRadius: [],
-    }
+    };
 
     // Map points to data in the Chart.js format.
     this.minValue = Number.POSITIVE_INFINITY;

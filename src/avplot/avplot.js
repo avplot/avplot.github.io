@@ -166,14 +166,15 @@ class AvChart {
 
     const offset = 0; // (maxValue - minValue) / 2;
     this.settings.valueOffset = offset;
-    this.settings.valueScale = Math.max(series.maxValue - offset, offset - series.minValue);
+    this.settings.valueScale = Math.max(
+      series.maxValue - offset,
+      offset - series.minValue
+    );
 
     return new Chart(el, {
       type: 'scatter',
       data: {
-        datasets: [
-          series.getChartSettings(),
-        ],
+        datasets: [series.getChartSettings()],
       },
       options: {
         animation: false,
