@@ -11,13 +11,11 @@ const defaults = {
   octaveOffset: 0,
 
   chartSettings: {
-    // label: 'Scatter Dataset',
-    showLine: true,
-    // data: [],
-    // pointRadius: [],
-    pointBackgroundColor: '#7f007f',
-    borderColor: '#9f3f9f',
-    borderWidth: 1,
+    // x: [1, 2, 3, 4],
+    // y: [12, 9, 15, 12],
+    mode: 'lines',
+    type: 'scatter',
+    // showlegend: false,
   },
 };
 
@@ -27,8 +25,9 @@ class AvData {
     this.settings.chartSettings = {
       ...defaults.chartSettings,
       ...this.settings.chartSettings,
-      data: [],
-      pointRadius: [],
+      x: [],
+      y: [],
+      // pointRadius: [],
     };
 
     // Map points to data in the Chart.js format.
@@ -36,13 +35,14 @@ class AvData {
     this.maxValue = Number.NEGATIVE_INFINITY;
     this.data = sourceData;
 
-    const { data, pointRadius } = this.settings.chartSettings;
+    const { x, y } = this.settings.chartSettings;
 
-    this.data.data.forEach(([x, y]) => {
-      this.minValue = Math.min(this.minValue, y);
-      this.maxValue = Math.max(this.maxValue, y);
-      data.push({ x, y });
-      pointRadius.push(0);
+    this.data.data.forEach(([xx, yy]) => {
+      this.minValue = Math.min(this.minValue, xx);
+      this.maxValue = Math.max(this.maxValue, yy);
+      x.push(xx);
+      y.push(yy);
+      // pointRadius.push(0);
     });
   }
 

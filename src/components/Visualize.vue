@@ -1,7 +1,5 @@
 <template>
-  <div style="height: 40vh">
-    <canvas ref="chartRef" />
-  </div>
+  <div ref="chartRef" style="height: 40vh"></div>
 
   <div class="py-2">
     <app-button @click="play">Play</app-button>
