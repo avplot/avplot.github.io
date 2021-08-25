@@ -1,43 +1,7 @@
-// src/avplot/index.js
+// src/avplot/avplot.js
 
-import {
-  Chart,
-  ArcElement,
-  LineElement,
-  // BarElement,
-  PointElement,
-  // BarController,
-  // BubbleController,
-  // DoughnutController,
-  // LineController,
-  // PieController,
-  // PolarAreaController,
-  // RadarController,
-  ScatterController,
-  // CategoryScale,
-  LinearScale,
-  // LogarithmicScale,
-  // RadialLinearScale,
-  // TimeScale,
-  // TimeSeriesScale,
-  // Decimation,
-  // Filler,
-  Legend,
-  Title,
-  // Tooltip,
-} from 'chart.js';
-
+import Plotly from 'plotly.js-basic-dist';
 import { AvData } from './avdata';
-
-Chart.register(
-  ArcElement,
-  LineElement,
-  PointElement,
-  ScatterController,
-  LinearScale,
-  Legend,
-  Title
-);
 
 const defaults = {
   animationDuration: 5000,
@@ -111,7 +75,7 @@ class AvChart {
         amp.gain.value = maxGain;
       } else {
         // Clear the previous highlighted point.
-        this.chart.config.data.datasets[0].pointRadius[i] = 0;
+        // this.chart.config.data.datasets[0].pointRadius[i] = 0;
       }
 
       if (i === data[0].data.length - 1) {
@@ -134,8 +98,8 @@ class AvChart {
           Math.round(pointsPerMs * elapsed),
           this.settings.data[0].data.length - 1
         );
-        this.chart.config.data.datasets[0].pointRadius[i] =
-          highlightPointRadius;
+        // this.chart.config.data.datasets[0].pointRadius[i] =
+        //   highlightPointRadius;
         const value = this.settings.data[0].data[i][1];
         const scale = 1 / (valueScale * octaveScale);
         const offset = valueOffset - octaveOffset * scale;
@@ -150,7 +114,7 @@ class AvChart {
       previousTimeStamp = timestamp;
       requestAnimationFrame(frame);
 
-      this.chart.update();
+      // this.chart.update();
     };
 
     requestAnimationFrame(frame);
@@ -160,7 +124,6 @@ class AvChart {
   // let chart = null;
 
   createChart(el, options) {
-    console.log(options.data);
     const series = new AvData(options.data[0], options);
     this.series.push(series);
 
@@ -171,22 +134,33 @@ class AvChart {
       offset - series.minValue
     );
 
-    return new Chart(el, {
-      type: 'scatter',
-      data: {
-        datasets: [series.getChartSettings()],
+    const data = [
+      series.getChartSettings()
+    ];
+
+    const layout = {
+      showlegend: false,
+      xaxis: {
+        title: 'Time (ms)',
       },
-      options: {
-        animation: false,
-        plugins: {
-          legend: {
-            display: false,
-          },
-        },
-        // Required for responsive sizing to work.
-        maintainAspectRatio: false,
+      yaxis: {
+        title: 'Potential (mV)',
       },
-    });
+      margin: {
+        l: 50,
+        r: 50,
+        b: 50,
+        t: 0,
+        pad: 4
+      },
+    };
+
+    const config = {
+      displaylogo: false,
+      responsive: true,
+    };
+
+    return Plotly.newPlot(el, data, layout, config);
   }
 }
 
